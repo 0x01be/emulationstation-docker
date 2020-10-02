@@ -1,33 +1,27 @@
-FROM alpine
+FROM 0x01be/emulationstation:build as build
 
-RUN apk add --no-cache --virtual emulationstation-build-dependencies \
-    git \
-    build-base \
-    cmake \
-    gtk+3.0-dev \
-    libx11-dev \
-    boost-dev \
-    sdl2-dev \
-    freeimage-dev \
-    freetype-dev \
-    eigen-dev \
-    curl-dev \
-    openssl-dev \
-    alsa-lib-dev \
-    mesa-dev \
+FROM 0x01be/xpra
+
+COPY --from=build /opt/emulationstation/ /opt/emulationstation/
+
+USER root
+
+RUN apk add --no-cache --virtual emulationstation-runtime-dependencies \
+    gtk+3.0 \
+    libx11 \
+    sdl2 \
+    freeimage \
+    freetype \
+    eigen \
+    curl \
+    openssl \
+    alsa-lib \
     ttf-droid-nonlatin \
-    vlc-dev \
-    rapidjson-dev
+    vlc \
+    rapidjson
 
+USER xpra
 
-ENV EMULATIONSTATION_REVISION master
-RUN git clone --recursive --branch ${EMULATIONSTATION_REVISION} https://github.com/retropie/emulationstation.git /emulationstation
-
-WORKDIR /emulationstation/build
-
-RUN cmake \
-    -DCMAKE_INSTALL_PREFIX=/opt/emulationstation \
-    ..
-RUN make
-RUN make install
+ENV PATH ${PATH}:/opt/emulationstation/bin/
+ENV COMMAND "emulationstation"
 
