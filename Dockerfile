@@ -18,7 +18,8 @@ RUN apk add --no-cache --virtual emulationstation-runtime-dependencies \
     alsa-lib \
     ttf-droid-nonlatin \
     vlc \
-    rapidjson
+    rapidjson \
+    mesa-dri-swrast
 
 USER xpra
 
